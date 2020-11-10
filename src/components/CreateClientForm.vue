@@ -1,6 +1,7 @@
 <template>
-  <form @submit.prevent="checkForm">
-    <div class="container">
+  <form class="form" @submit.prevent="checkForm">
+    <div class="form__section section">
+      <!-------------- ФИО --------------->
       <label for="last-name">Фамилия</label>
       <input
         type="text"
@@ -51,6 +52,8 @@
         v-if="$v.form.middleName.$dirty && !$v.form.middleName.maxLength"
       >Максимальная длина - 50 символов</p>
       <br />
+
+      <!---------  Дата рождения -------->
 
       <label class="birth">
         Дата рождения
@@ -114,11 +117,11 @@
           class="error"
           v-if="$v.form.birthDay.$dirty && $v.form.birthMonth.$dirty && $v.form.birthYear.$dirty && !($v.form.birthDay.required || $v.form.birthMonth.required || $v.form.birthYear.required )"
         >Поле не должно быть пустым</p>
-        <br />
-
-        <br />
+     
       </label>
       <br />
+
+      <!------ Номер телефона ---------->
 
       <label for="phone">Номер телефона</label>
       <input
@@ -138,6 +141,7 @@
       >Номер телефона должен начинаться с 7 и содержать только цифры</p>
       <br />
 
+      <!---------- Пол ----------------->
       <label>
         Пол
         <br />
@@ -166,6 +170,7 @@
       </label>
       <br />
 
+      <!-------- Группа клиентов -------->
       <label for="client-group">Группа клиентов</label>
       <select
         :class="$v.form.clientGroupSelected.$error ? 'is-invalid': ''"
@@ -186,6 +191,8 @@
       >Выберите группу, к которой относится клиент</p>
       <br />
 
+      <!-------- Лечащий врач ------------------>
+
       <label for="doctor">Лечащий врач</label>
       <select name="doctor" id="doctor" v-model="form.doctorSelected">
         <option disabled value>Выберите врача</option>
@@ -197,13 +204,150 @@
       </select>
       <br />
 
+      <!-------- Не отправлять SMS --------------->
+
       <label for="dont-send-sms">
         <input type="checkbox" name="dont-send-sms" id="dont-send-sms" v-model="form.dontSendSms" />
         Не отправлять СМС
       </label>
       <br />
-      <button class="btn" type="submit">Coxpaнить</button>
     </div>
+
+    <!------------ Адрес ------------------>
+    <br />
+    <div class="form__section section">
+      <label>Индекс</label>
+      <input
+        type="number"
+        :class="$v.form.cityIndex.$error ? 'is-invalid': ''"
+        v-model.number="form.cityIndex"
+      />
+      <p
+        class="error"
+        v-if="$v.form.clientGroupSelected.$dirty && !$v.form.cityIndex.integer"
+      >Некорректное значение</p>
+      <p
+        class="error"
+        v-if="$v.form.clientGroupSelected.$dirty && (!$v.form.cityIndex.minlength || !$v.form.cityIndex.maxlength)"
+      >Индекс должен содержать 6 цифр</p>
+      <br />
+
+      <label>Страна</label>
+      <input
+        type="text"
+        :class="$v.form.country.$error ? 'is-invalid' :''"
+        v-model="form.country"
+      />
+      <p
+        class="error"
+        v-if="$v.form.country.$dirty && !$v.form.country.maxlength"
+      >Максимальная длина - 50 символов</p>
+      <br />
+
+      <label>Область</label>
+      <input
+        type="text"
+        :class="$v.form.region.$error ? 'is-invalid' :''"
+        v-model="form.region"
+      />
+      <p
+        class="error"
+        v-if="$v.form.region.$dirty && !$v.form.region.maxlength"
+      >Максимальная длина - 50 символов</p>
+      <br />
+
+      <label>Город</label>
+      <input type="text" :class="$v.form.city.$error ? 'is-invalid': ''" v-model="form.city" />
+      <p
+        class="error"
+        v-if="$v.form.city.$dirty && !$v.form.city.required"
+      >Поле не должно быть пустым</p>
+      <p
+        class="error"
+        v-if="$v.form.city.$dirty && !$v.form.city.maxlength"
+      >Максимальная длина - 50 символов</p>
+      <br />
+
+      <label>Улица</label>
+      <input type="text" :class="$v.form.street.$error ? 'is-invalid': ''" v-model="form.street" />
+      <p
+        class="error"
+        v-if="$v.form.street.$dirty && !$v.form.street.maxlength"
+      >Максимальная длина - 60 символов</p>
+      <br />
+ 
+      <label>Дом</label>
+      <input type="number" v-model="form.houseNumber" />
+      <p
+        class="error"
+        v-if="$v.form.houseNumber.$dirty && !$v.form.houseNumber.maxlength"
+      >Максимальная длина - 10 символов</p>
+      <br />
+    </div>
+
+    <!------------- Паспортные данные ------------------>
+   <br />
+  
+    <div class="form__section section">
+      <label>Тип документа</label>
+      <select :class="$v.form.documentType.$error ? 'is-invalid': ''" v-model="form.documentType">
+        <option
+          v-for="(type, index) in documentTypes"
+          :value="type.value"
+          :key="index"
+        >{{type.label}}</option>
+      </select>
+      <p
+        class="error"
+        v-if="$v.form.documentType.$dirty && !$v.form.documentType.required"
+      >Поле не должно быть пустым</p>
+      <br />
+
+      <label>Серия</label>
+      <input
+        type="text"
+        :class="$v.form.documentSeries.$error ? 'is-invalid': ''"
+        v-model="form.documentSeries"
+      />
+      <p
+        class="error"
+        v-if="$v.form.documentSeries.$dirty && (!$v.form.documentSeries.minLength || !$v.form.documentSeries.maxLength)"
+      >Поле должно содержать от 4 до 7 символов</p>
+      <br />
+
+      <label>Номер</label>
+      <input
+        type="number"
+        :class="$v.form.documentNumber.$error ? 'is-invalid': ''"
+        v-model.number="form.documentNumber"
+      />
+      <p
+        class="error"
+        v-if="$v.form.documentNumber.$dirty && (!$v.form.documentNumber.minLength || !$v.form.documentNumber.maxLength)"
+      >Поле должно содержать 6 символов</p>
+      <br />
+     
+      <label>Кем выдан</label>
+      <input type="text" :class="$v.form.documentNumber.$error ? 'is-invalid': ''" v-model="form.issuedBy" />
+      <br />
+
+      <label>Дата выдачи</label>
+      <input
+        type="date"
+        :class="$v.form.issueDate.$error ? 'is-invalid': ''"
+        v-model="form.issueDate"
+      />
+      <p
+        class="error"
+        v-if="$v.form.issueDate.$dirty && !$v.form.issueDate.required"
+      >Поле не должно быть пустым</p>
+      <p
+        class="error"
+        v-if="$v.form.issueDate.$dirty && $v.form.issueDate.required && (!$v.form.issueDate.minValue || !$v.form.issueDate.maхValue)"
+      >Выход за допустимый диапазон</p>
+      <br />
+    </div>
+    <button class="btn" type="submit">Coxpaнить</button>
   </form>
 </template>
 
@@ -213,42 +357,41 @@
 import { validationMixin } from "vuelidate";
 import {
   required,
+  minLength,
   maxLength,
   between,
-  minValue
+  minValue,
+  maxValue,
+  integer
 } from "vuelidate/lib/validators";
 
-const isPhone = value => /^((7)+([0-9]){10})/.test(value);
-let monthLengthArr = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const isPhone = value => /^((7)+([0-9]){10})/.test(value); // проверяем, что номер начинается с 7, содержит только цифры (всего 11)
+
+let monthLengthArr = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; //количество дней для каждого месяца в году (по умолчанию - не високосном)
 
 const validDayNumber = function() {
   let day = this.form.birthDay;
   let month = this.form.birthMonth;
   let year = this.form.birthYear;
 
+  // если год високосный, то в феврале 29 дней
   if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)) {
-    this.isLeapYear = true;
+    this.isLeapYear = true; //високосный
     monthLengthArr[1] = 29;
   } else {
-    this.isLeapYear = false;
+    this.isLeapYear = false; //не високосный
   }
 
-  this.monthLength = monthLengthArr[month - 1];
-  console.log("День", day);
-  console.log("Месяц", month);
-  console.log("Год", year);
-  console.log("Дней в месяце", this.monthLength);
-
-  console.log("Високосный", this.isLeapYear);
-
-  console.log("Валидатор вернет : ", day > 0 && day <= this.monthLength);
+  this.monthLength = monthLengthArr[month - 1]; //количество дней в месяце, который ввел пользователь
 
   return /*day > 0 && */ day <= this.monthLength;
 };
 
 export default {
+  name: "CreateClientForm",
   mixins: [validationMixin],
   data: () => ({
+    // информация, введенная пользователем
     form: {
       lastName: null,
       firstName: null,
@@ -260,7 +403,20 @@ export default {
       gender: "not-selected",
       clientGroupSelected: [],
       doctorSelected: null,
-      dontSendSms: false
+      dontSendSms: false,
+
+      cityIndex: null,
+      country: null,
+      region: null,
+      city: null,
+      street: null,
+      houseNumber: null,
+
+      documentType: null,
+      documentSeries: null,
+      documentNumber: null,
+      issuedBy: null,
+      issueDate: null
     },
 
     isLeapYear: false,
@@ -294,8 +450,24 @@ export default {
         label: "Чернышева",
         value: "chernysheva"
       }
+    ],
+
+    documentTypes: [
+      {
+        label: "Паспорт",
+        value: "passport"
+      },
+      {
+        label: "Свидетельство о рождении",
+        value: "birthСertificate"
+      },
+      {
+        label: "Вод. удостоверение",
+        value: "driversLicense"
+      }
     ]
   }),
+
   validations: {
     form: {
       lastName: {
@@ -322,7 +494,6 @@ export default {
       },
       birthYear: {
         required,
-        //maxLength: maxLength(4),
         between: between(1900, 2020)
       },
       phone: {
@@ -331,15 +502,56 @@ export default {
       },
       clientGroupSelected: {
         required
+      },
+      cityIndex: {
+        integer,
+        minLength: minLength(6),
+        maxLength: maxLength(6)
+      },
+      country: {
+        maxLength: maxLength(50)
+      },
+      region: {
+        maxLength: maxLength(50)
+      },
+      city: {
+        required,
+        maxLength: maxLength(60)
+      },
+      street: {
+        maxLength: maxLength(60)
+      },
+      houseNumber: {
+        maxLength: maxLength(10)
+      },
+      documentType: {
+        required
+      },
+      documentSeries: {
+        //доработать валидацию
+        minLength: minLength(4),
+        maxLength: maxLength(7)
+      },
+      documentNumber: {
+        integer,
+        minLength: minLength(6),
+        maxLength: maxLength(6)
+      },
+      issuedBy: {
+        maxLength: maxLength(70)
+      },
+      issueDate: {
+        required,
+        minValue: minValue(new Date(1990, 0, 1)),
+        maxValue: maxValue(new Date())
       }
     }
   },
-
   methods: {
     checkForm() {
       this.$v.form.$touch();
       if (this.$v.form.$error) {
-        console.log("Invalid!");
+        console.log("Form is invalid!");
         return;
       } else console.log("Submit happend!");
     }
@@ -348,24 +560,27 @@ export default {
 </script>
 
 
-<style scoped>
-form {
+<style>
+.form {
   width: 700px;
   margin: 0 auto;
 }
 
-.container {
+.form__section {
   display: flex;
   flex-direction: column;
   text-align: left;
+
+  border: 1.5px solid #767676;
+  border-radius: 5px;
+  padding: 10px 20px;
 }
 
-input[type="text"],
-input[type="tel"],
-select {
-  padding: 5px 10px;
+.section {
+  margin-bottom: 30px;
 }
 
+/* TODO: Переименовать стили ниже */
 .gender-wrapper label {
   margin-right: 10px;
 }
