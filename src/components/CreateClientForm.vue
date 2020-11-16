@@ -1,15 +1,18 @@
 <template>
   <form class="form" @submit.prevent="checkForm">
-    <div class="form__section section">
+    <div class="form__section section section--main">
+      <h2 class="section__title">Основная информация</h2>
       <MainFields v-bind:checkFields="checkFields" v-on:check-result="getCheckResult" />
     </div>
     <div class="form__section section">
+      <h2 class="section__title">Адрес</h2>
       <AddressFields v-bind:checkFields="checkFields" v-on:check-result="getCheckResult" />
     </div>
     <div class="form__section section">
-      <PassportFields v-bind:checkFields="checkFields" v-on:check-result="getCheckResult" />
+      <h2 class="section__title">Удостоверение личности</h2>
+      <DocumentFields v-bind:checkFields="checkFields" v-on:check-result="getCheckResult" />
     </div>
-    <button class="btn" type="submit">Coxpaнить</button>
+    <button class="form__submit" type="submit">Coxpaнить</button>
   </form>
 </template>
 
@@ -18,21 +21,21 @@
 <script>
 import MainFields from "@/components/MainFields";
 import AddressFields from "@/components/AddressFields";
-import PassportFields from "@/components/PassportFields";
+import DocumentFields from "@/components/DocumentFields";
 
 export default {
   name: "CreateClientForm",
   components: {
     MainFields,
     AddressFields,
-    PassportFields
+    DocumentFields
   },
   data: () => ({
     checkFields: false,
     validationResult: {
       MainFields: undefined,
       AddressFields: undefined,
-      PassportFields: undefined
+      DocumentFields: undefined
     }
   }),
 
@@ -52,6 +55,7 @@ export default {
 
       // this.checkFields = false;
       // this.clearValidationResult();
+      // ДОДЕЛАТЬ!!!! ВЫВОДИТЬ СООБЩЕНИЕ, ЕСЛИ ЗАРЕГИСТРИРОВАН УСПЕШНО !!!!
     },
 
     clearValidationResult() {
@@ -62,61 +66,46 @@ export default {
 </script>
 
 
-<style>
-.form {
-  width: 700px;
-  margin: 0 auto;
-}
+<style lang="sass" >
+@import "../styles/_variables.sass"
 
-.form__section {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
+.form
+  margin: 0 auto
+  width: 700px
+  padding: 1.8rem 2.1rem
+  border-radius: $form-radius
+  background-color: $surface-color
+  box-shadow: 0px 0px 6px 2px $shadow-color
+  text-align: left
 
-  border: 1.5px solid #767676;
-  border-radius: 5px;
-  padding: 10px 20px;
-}
+  &__section
+    margin-bottom: 30px
 
-.section {
-  margin-bottom: 30px;
-}
+.section--main
+  margin-bottom: 0
 
-/* TODO: Переименовать стили ниже */
-.gender-wrapper label {
-  margin-right: 10px;
-}
+.section__title
+  position: relative
+  margin: 0 0 30px
+  padding: 0
+  color: $title-color
+  font-size: 1.6rem
 
-.btn {
-  padding: 5px 10px;
-  width: 100px;
-}
+  &::after
+    content: ''
+    position: absolute
+    top: 45px
+    left: 0
+    border-top: $title-underline
+    width: 100%
+    height: 0px
 
-.is-invalid {
-  border: 1px solid red;
-  border-radius: 3px;
-}
-
-.error {
-  margin: 0;
-  padding: 5px 0;
-  font-size: 13px;
-  color: red;
-}
-
-.birth__day,
-.birth__month,
-.birth__year {
-  margin-left: 5px;
-}
-
-.birth__day,
-.birth__month {
-  margin-right: 15px;
-  max-width: 20px;
-}
-
-.birth__year {
-  max-width: 40px;
-}
+.form__submit
+  padding: 10px 20px
+  min-width: 100px
+  background-color: $primary-color
+  font-weight: bold
+  color: #fff
+  border: 0
+  border-radius: 35px
 </style>

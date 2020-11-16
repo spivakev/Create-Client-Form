@@ -1,201 +1,234 @@
 <template>
-  <!-------------- ФИО --------------->
-  <div class="main-fields">
-    <label for="last-name">Фамилия</label>
-    <input
-      type="text"
-      maxlength="50"
-      :class="$v.lastName.$error ? 'is-invalid': ''"
-      name="last-name"
-      id="last-name"
-      v-model.trim="lastName"
-      @blur="$v.lastName.$touch()"
-    />
-    <p class="error" v-if="$v.lastName.$dirty && !$v.lastName.required">Поле не должно быть пустым</p>
-    <p
-      class="error"
-      v-if="$v.lastName.$dirty && !$v.lastName.maxLength"
-    >Максимальная длина - 50 символов</p>
-    <p
-      class="error"
-      v-if="$v.lastName.$dirty &&  $v.lastName.required && !$v.lastName.onlyValidSymbols"
-    >Поле может содержать только буквы и следующие знаки: {{ validSymbols }}</p>
-    <br />
+  <!-------------- Фамилия --------------->
+  <div class="main">
+    <div
+      class="field main__field main__field--last-name"
+      :class="$v.lastName.$error ? 'field--invalid': ''"
+    >
+      <label for="last-name">Фамилия</label>
+      <input
+        type="text"
+        maxlength="50"
+        :class="$v.lastName.$error ? 'field__input--invalid': ''"
+        name="last-name"
+        id="last-name"
+        v-model.trim="lastName"
+        @blur="$v.lastName.$touch()"
+      />
+      <p
+        class="field__error"
+        v-if="$v.lastName.$dirty && !$v.lastName.required"
+      >Поле не должно быть пустым</p>
+      <p
+        class="field__error"
+        v-if="$v.lastName.$dirty && !$v.lastName.maxLength"
+      >Максимальная длина - 50 символов</p>
+      <p
+        class="field__error"
+        v-if="$v.lastName.$dirty &&  $v.lastName.required && !$v.lastName.onlyValidSymbols"
+      >Поле содержит недопустимые символы</p>
+    </div>
 
-    <label for="first-name">Имя</label>
-    <input
-      type="text"
-      maxlength="50"
-      :class="$v.firstName.$error ? 'is-invalid': ''"
-      name="first-name"
-      id="first-name"
-      v-model.trim="firstName"
-      @blur="$v.firstName.$touch()"
-    />
+    <!-------------- Имя --------------->
+    <div
+      class="field main__field main__field--first-name"
+      :class="$v.firstName.$error ? 'field--invalid': ''"
+    >
+      <label for="first-name">Имя</label>
+      <input
+        type="text"
+        maxlength="50"
+        :class="$v.firstName.$error ? 'field__input--invalid': ''"
+        name="first-name"
+        id="first-name"
+        v-model.trim="firstName"
+        @blur="$v.firstName.$touch()"
+      />
+      <p
+        class="field__error"
+        v-if="$v.firstName.$dirty && !$v.firstName.required"
+      >Поле не должно быть пустым</p>
+      <p
+        class="field__error"
+        v-if="$v.firstName.$dirty && !$v.firstName.maxLength"
+      >Максимальная длина - 50 символов</p>
+      <p
+        class="field__error"
+        v-if="$v.firstName.$dirty &&  $v.firstName.required && !$v.firstName.onlyValidSymbols"
+      >Поле содержит недопустимые символы</p>
+    </div>
 
-    <p class="error" v-if="$v.firstName.$dirty && !$v.firstName.required">Поле не должно быть пустым</p>
-    <p
-      class="error"
-      v-if="$v.firstName.$dirty && !$v.firstName.maxLength"
-    >Максимальная длина - 50 символов</p>
-    <p
-      class="error"
-      v-if="$v.firstName.$dirty &&  $v.firstName.required && !$v.firstName.onlyValidSymbols"
-    >Поле может содержать только буквы и следующие знаки: {{ validSymbols }}</p>
-    <br />
-
-    <label for="middle-name">Отчество</label>
-    <input
-      type="text"
-      maxlength="50"
-      :class="$v.middleName.$error ? 'is-invalid': ''"
-      name="middle-name"
-      id="middle-name"
-      v-model.trim="middleName"
-      @blur="$v.middleName.$touch()"
-    />
-    <p
-      class="error"
-      v-if="$v.middleName.$dirty && !$v.middleName.maxLength"
-    >Максимальная длина - 50 символов</p>
-    <p
-      class="error"
-      v-if="$v.middleName.$dirty && !$v.middleName.onlyValidSymbols"
-    >Поле может содержать только буквы и следующие знаки: {{ validSymbols }}</p>
-    <br />
+    <!-------------- Отчество --------------->
+    <div
+      class="field main__field main__field--middle-name"
+      :class="$v.middleName.$error ? 'field--invalid': ''"
+    >
+      <label for="middle-name">Отчество</label>
+      <input
+        type="text"
+        maxlength="50"
+        :class="$v.middleName.$error ? 'field__input--invalid': ''"
+        name="middle-name"
+        id="middle-name"
+        v-model.trim="middleName"
+        @blur="$v.middleName.$touch()"
+      />
+      <p
+        class="field__error"
+        v-if="$v.middleName.$dirty && !$v.middleName.maxLength"
+      >Максимальная длина - 50 символов</p>
+      <p
+        class="field__error"
+        v-if="$v.middleName.$dirty && !$v.middleName.onlyValidSymbols"
+      >Поле содержит недопустимые символы</p>
+    </div>
 
     <!---------  Дата рождения -------->
 
-    <label class="birthDate">Дата рождения</label>
-
-    <input
-      type="date"
-      :class="$v.birthDate$error ? 'is-invalid': ''"
-      v-model="birthDate"
-      @blur="$v.birthDate.$touch()"
-    />
-    <p class="error" v-if="$v.birthDate.$dirty && !$v.birthDate.required">Поле не должно быть пустым</p>
-    <p
-      class="error"
-      v-if="$v.birthDate.$dirty && $v.birthDate.required && !$v.birthDate.isCorrectDate"
-    >Выход за допустимый диапазон</p>
-
-    <br />
+    <div
+      class="field main__field main__field--birthdate birthdate"
+      :class="$v.birthDate.$error ? 'field--invalid': ''"
+    >
+      <label class="birthDate">Дата рождения</label>
+      <input
+        type="date"
+        class="birthdate__input"
+        :class="$v.birthDate.$error ? 'field__input--invalid': ''"
+        v-model="birthDate"
+        @blur="$v.birthDate.$touch()"
+      />
+      <p
+        class="field__error"
+        v-if="$v.birthDate.$dirty && !$v.birthDate.required"
+      >Поле не должно быть пустым</p>
+      <p
+        class="field__error"
+        v-if="$v.birthDate.$dirty && $v.birthDate.required && !$v.birthDate.isCorrectDate"
+      >Выход за допустимый диапазон</p>
+    </div>
 
     <!------ Номер телефона ---------->
-
-    <label for="phone">Номер телефона</label>
-    <input
-      type="tel"
-      placeholder="79998887766"
-      maxlength="11"
-      :class="$v.phone.$error ? 'is-invalid': ''"
-      name="phone"
-      id="phone"
-      v-model="phone"
-      @blur="$v.phone.$touch()"
-    />
-    <p class="error" v-if="$v.phone.$dirty && !$v.phone.required">Поле не должно быть пустым</p>
-    <p
-      class="error"
-      v-if="$v.phone.$dirty && !$v.phone.phoneValid"
-    >Номер телефона должен начинаться с 7 и содержать только цифры</p>
-    <br />
+    <div
+      class="field main__field main__field--phone"
+      :class="$v.phone.$error ? 'field--invalid': ''"
+    >
+      <label for="phone">Номер телефона</label>
+      <input
+        type="tel"
+        placeholder="79998887766"
+        maxlength="11"
+        :class="$v.phone.$error ? 'field__input--invalid': ''"
+        name="phone"
+        id="phone"
+        v-model="phone"
+        @blur="$v.phone.$touch()"
+      />
+      <p
+        class="field__error"
+        v-if="$v.phone.$dirty && !$v.phone.required"
+      >Поле не должно быть пустым</p>
+      <p
+        class="field__error"
+        v-if="$v.phone.$dirty && $v.phone.required && !$v.phone.phoneValid"
+      >Телефон не соответствует формату</p>
+    </div>
 
     <!---------- Пол ----------------->
-    <label>
-      Пол
-      <br />
-      <div class="gender-wrapper">
-        <label for="not-selected">
-          <input
-            type="radio"
-            id="not-selected"
-            name="gender"
-            value="not-selected"
-            v-model="gender"
-            @blur="$v.gender.$touch()"
-          />
-          Не указан
-        </label>
+    <div class="field main__field main__field--gender">
+      <label>
+        Пол
+        <div class="gender-wrapper">
+          <label for="not-selected">
+            <input
+              type="radio"
+              id="not-selected"
+              name="gender"
+              value="not-selected"
+              v-model="gender"
+              @blur="$v.gender.$touch()"
+            />
+            Не указан
+          </label>
 
-        <label for="male">
-          <input
-            type="radio"
-            id="male"
-            name="gender"
-            value="male"
-            v-model="gender"
-            @blur="$v.gender.$touch()"
-          />
-          Мужской
-        </label>
+          <label for="male">
+            <input
+              type="radio"
+              id="male"
+              name="gender"
+              value="male"
+              v-model="gender"
+              @blur="$v.gender.$touch()"
+            />
+            Мужской
+          </label>
 
-        <label for="female">
-          <input
-            type="radio"
-            id="female"
-            name="gender"
-            value="female"
-            v-model="gender"
-            @blur="$v.gender.$touch()"
-          />
-          Женский
-        </label>
-      </div>
-    </label>
-    <br />
+          <label for="female">
+            <input
+              type="radio"
+              id="female"
+              name="gender"
+              value="female"
+              v-model="gender"
+              @blur="$v.gender.$touch()"
+            />
+            Женский
+          </label>
+        </div>
+      </label>
+    </div>
 
     <!-------- Группа клиентов -------->
-    <label for="client-group">Группа клиентов</label>
-    <select
-      :class="$v.clientGroupSelected.$error ? 'is-invalid': ''"
-      name="client-group"
-      id="client-group"
-      multiple
-      v-model="clientGroupSelected"
-      @blur="$v.clientGroupSelected.$touch()"
+    <div
+      class="field main__field main__field--client-group"
+      :class="$v.clientGroupSelected.$error ? 'field--invalid': ''"
     >
-      <option
-        v-for="(group, index) in clientGroups"
-        :value="group.value"
-        :key="index"
-      >{{group.label}}</option>
-    </select>
-    <p
-      class="error"
-      v-if="$v.clientGroupSelected.$dirty && !$v.clientGroupSelected.required"
-    >Выберите группу, к которой относится клиент</p>
-    <br />
-
+      <label for="client-group">Группа клиентов</label>
+      <select
+        :class="$v.clientGroupSelected.$error ? 'field__input--invalid': ''"
+        name="client-group"
+        id="client-group"
+        size="3"
+        multiple
+        v-model="clientGroupSelected"
+        @blur="$v.clientGroupSelected.$touch()"
+      >
+        <option
+          v-for="(group, index) in clientGroups"
+          :value="group.value"
+          :key="index"
+        >{{group.label}}</option>
+      </select>
+      <p
+        class="field__error"
+        v-if="$v.clientGroupSelected.$dirty && !$v.clientGroupSelected.required"
+      >Выберите группу, к которой относится клиент</p>
+    </div>
     <!-------- Лечащий врач ------------------>
-
-    <label for="doctor">Лечащий врач</label>
-    <select name="doctor" id="doctor" v-model="doctorSelected" @blur="$v.doctorSelected.$touch()">
-      <option disabled value>Выберите врача</option>
-      <option v-for="(doctor, index) in doctors" :value="doctor.value" :key="index">{{doctor.label}}</option>
-    </select>
-    <br />
-
+    <div class="field main__field main__field--doctor">
+      <label for="doctor">Лечащий врач</label>
+      <select name="doctor" id="doctor" v-model="doctorSelected" @blur="$v.doctorSelected.$touch()">
+        <option disabled value>Выберите врача</option>
+        <option
+          v-for="(doctor, index) in doctors"
+          :value="doctor.value"
+          :key="index"
+        >{{doctor.label}}</option>
+      </select>
+    </div>
     <!-------- Не отправлять SMS --------------->
-
-    <label for="dont-send-sms">
-      <input type="checkbox" name="dont-send-sms" id="dont-send-sms" v-model="dontSendSms" />
-      Не отправлять СМС
-    </label>
-    <br />
+    <div class="field main__field main__field--sms">
+      <label for="dont-send-sms">
+        <input type="checkbox" name="dont-send-sms" id="dont-send-sms" v-model="dontSendSms" />
+        Не отправлять СМС
+      </label>
+    </div>
   </div>
 </template>
 
 
 <script>
 import { validationMixin } from "vuelidate";
-import {
-  required,
-  maxLength
-  //  minValue,
-  //  maxValue
-} from "vuelidate/lib/validators";
+import { required, maxLength } from "vuelidate/lib/validators";
 
 const isPhone = value => /^((7)+([0-9]){10})/.test(value); // проверяем, что номер начинается с 7, содержит только цифры (всего 11)
 
@@ -302,10 +335,67 @@ export default {
 </script>
 
 
-<style scoped>
-.main-fields {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
+<style lang="sass" scoped>
+@import "../styles/_variables.sass"
+@import "../styles/_field.sass"
+
+.main
+  display: grid
+  grid-gap: 0px 1.8rem
+  grid-template-columns: repeat(6, 1fr)
+  grid-template-rows: repeat(5, 85px)
+  grid-template-areas: "a a b b c c" "d d e e e e" "f f g g g g" "h h h i i i" "h h h . . ."
+  text-align: left
+
+.main__field > label
+  margin-bottom: 0.2rem
+
+.main__field--last-name
+  order: 1
+  grid-area: a
+
+.main__field--first-name
+  order: 2
+  grid-area: b
+
+.main__field--middle-name
+  order: 3
+  grid-area: c
+
+.main__field--birthdate
+  order: 4
+  grid-area: d
+
+.birthdate__input
+  width: 100%
+
+.main__field--gender
+  order: 5
+  grid-area: e
+
+.main__field--client-group
+  order: 8
+  grid-area: h
+
+.main__field--sms
+  order: 7
+  grid-area: g
+  justify-content: center
+
+  & label
+    padding: 27px 0 0
+
+.main__field--phone
+  order: 6
+  grid-area: f
+
+.main__field--doctor
+  order: 9
+  grid-area: i
+
+.gender-wrapper
+  padding: 10px 0
+
+.gender-wrapper label
+  margin-right: 10px
 </style>
