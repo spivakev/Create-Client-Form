@@ -58,4 +58,24 @@ input[type="number"]
 
 label
   color: $title-color
+
+@media (max-width: 767px)
+  #app
+    font-size: 14px
+
+img, input,
+select, button, progress
+  max-width: 100%
+
+input[type="file"],
+input[type="submit"]  
+  white-space: pre-wrap
+
+progress,
+input[type="range"]  
+  width: 100%
+
+@supports (--moz-appearance: none)
+  input[type="number"]  
+  width: 100%
 </style>

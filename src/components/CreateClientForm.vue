@@ -4,15 +4,16 @@
       <h2 class="section__title">Основная информация</h2>
       <MainFields v-bind:checkFields="checkFields" v-on:check-result="getCheckResult" />
     </div>
-    <div class="form__section section">
+    <div class="form__section section section--address">
       <h2 class="section__title">Адрес</h2>
       <AddressFields v-bind:checkFields="checkFields" v-on:check-result="getCheckResult" />
     </div>
-    <div class="form__section section">
+    <div class="form__section section section--document">
       <h2 class="section__title">Удостоверение личности</h2>
       <DocumentFields v-bind:checkFields="checkFields" v-on:check-result="getCheckResult" />
     </div>
-    <button class="form__submit" type="submit">Coxpaнить</button>
+
+    <button class="btn btn--submit" type="submit">Coxpaнить</button>
   </form>
 </template>
 
@@ -32,10 +33,20 @@ export default {
   },
   data: () => ({
     checkFields: false,
+    formInvalid: false,
     validationResult: {
-      MainFields: undefined,
-      AddressFields: undefined,
-      DocumentFields: undefined
+      MainFields: {
+        checked: false,
+        valid: null
+      },
+      AddressFields: {
+        checked: false,
+        valid: null
+      },
+      DocumentFields: {
+        checked: false,
+        valid: null
+      }
     }
   }),
 
@@ -44,22 +55,48 @@ export default {
       this.checkFields = true;
     },
 
-    getCheckResult(component, valid) {
-      this.validationResult[component] = valid;
+  // принимаем результат вылидации одного из блоков формы (Основная информация/ Адрес / Удостоверение личности)
+    getCheckResult(result) {
+      let component = result.component;
+      let valid = result.valid;
 
-      if (this.checkFields && this.validationResult[component]) {
-        console.log(`Все поля компонента ${component} валидны`);
-      } else if (this.checkFields && !this.validationResult[component]) {
-        console.log(`В компоненте ${component} есть невалидные поля`);
+      this.validationResult[component].checked = true;
+      this.validationResult[component].valid = valid;
+
+      if (this.checkFields) {
+        let submitSuccess = true;
+        let checkedAllFields = true;
+
+        for (let component in this.validationResult) {
+          if (!this.validationResult[component].checked) {
+            checkedAllFields = false;
+          }
+
+          if (
+            this.validationResult[component].checked &&
+            !this.validationResult[component].valid
+          ) {
+            submitSuccess = false;
+          }
+        }
+
+        if (checkedAllFields) {
+          if (submitSuccess) {
+            alert("Клиент создан успешно");
+          } else {
+            alert("Не все поля заполнены корректно");
+          }
+          this.checkFields = false;
+          this.clearValidationResult();
+        }
       }
-
-      // this.checkFields = false;
-      // this.clearValidationResult();
-      // ДОДЕЛАТЬ!!!! ВЫВОДИТЬ СООБЩЕНИЕ, ЕСЛИ ЗАРЕГИСТРИРОВАН УСПЕШНО !!!!
     },
 
     clearValidationResult() {
-      this.validationResult[MainFields] = undefined;
+      for (let component in this.validationResult) {
+        this.validationResult[component].checked = false;
+        this.validationResult[component].valid = null;
+      }
     }
   }
 };
@@ -70,42 +107,77 @@ export default {
 @import "../styles/_variables.sass"
 
 .form
+  display: flex
+  box-sizing: border-box
+  flex-direction: column
+  background-color: $surface-color
+  text-align: left
   margin: 0 auto
-  width: 700px
   padding: 1.8rem 2.1rem
   border-radius: $form-radius
-  background-color: $surface-color
-  box-shadow: 0px 0px 6px 2px $shadow-color
-  text-align: left
 
   &__section
     margin-bottom: 30px
 
 .section--main
-  margin-bottom: 0
+  margin-bottom: 24px
 
 .section__title
   position: relative
-  margin: 0 0 30px
   padding: 0
+  margin: 0 0 30px
   color: $title-color
-  font-size: 1.6rem
 
   &::after
     content: ''
     position: absolute
-    top: 45px
     left: 0
+    top: 45px
     border-top: $title-underline
     width: 100%
     height: 0px
 
-.form__submit
-  padding: 10px 20px
-  min-width: 100px
+@media (min-width: 768px)
+  .form
+    width: 770px
+    box-shadow: 0px 0px 6px 2px $shadow-color
+
+  .section-title
+    font-size: 26px
+
+@media (max-width: 767px)
+  .form
+    margin: 0
+    width: 100%
+
+  .section-title
+    font-size: 23px
+
+@media (max-width: 539px)
+  .form
+    padding: 15px
+
+.btn
+  border: 0
+  border-radius: 35px
   background-color: $primary-color
   font-weight: bold
   color: #fff
-  border: 0
-  border-radius: 35px
+
+.btn--submit
+  align-self: center
+  padding: 12px 50px
+  min-width: 100px
+
+.btn--submit:hover
+  filter: brightness(110%)
+
+.btn--submit:active
+  filter: brightness(90%)
+
+.btn--submit:focus
+  outline: 0
+
+.btn--disable
+  pointer-events: none
 </style>

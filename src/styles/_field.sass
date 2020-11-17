@@ -2,8 +2,13 @@
   display: flex
   flex-direction: column
 
-.field--invalid
-  margin-bottom: 0
+@media (min-width: 768px)
+  .field > label
+    margin-bottom: 3px
+
+@media (max-width: 767px)
+  .field > label
+    margin-bottom: 1px
 
 .field__input--invalid
   border: $invalid-input-border
@@ -11,6 +16,13 @@
 
 .field__error
   margin: 0
-  padding: 5px 0
   font-size: 9px
   color: $error-color
+
+@media (min-width: 767px)
+  .field__error
+    padding: 5px 0
+
+@media (max-width: 767px)
+  .field__error
+    padding: 2px 0

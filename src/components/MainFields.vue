@@ -1,13 +1,11 @@
 <template>
   <!-------------- Фамилия --------------->
   <div class="main">
-    <div
-      class="field main__field main__field--last-name"
-      :class="$v.lastName.$error ? 'field--invalid': ''"
-    >
+    <div class="field main__field main__field--last-name">
       <label for="last-name">Фамилия</label>
       <input
         type="text"
+        tabindex="1"
         maxlength="50"
         :class="$v.lastName.$error ? 'field__input--invalid': ''"
         name="last-name"
@@ -30,13 +28,11 @@
     </div>
 
     <!-------------- Имя --------------->
-    <div
-      class="field main__field main__field--first-name"
-      :class="$v.firstName.$error ? 'field--invalid': ''"
-    >
+    <div class="field main__field main__field--first-name">
       <label for="first-name">Имя</label>
       <input
         type="text"
+        tabindex="2"
         maxlength="50"
         :class="$v.firstName.$error ? 'field__input--invalid': ''"
         name="first-name"
@@ -59,13 +55,11 @@
     </div>
 
     <!-------------- Отчество --------------->
-    <div
-      class="field main__field main__field--middle-name"
-      :class="$v.middleName.$error ? 'field--invalid': ''"
-    >
+    <div class="field main__field main__field--middle-name">
       <label for="middle-name">Отчество</label>
       <input
         type="text"
+        tabindex="3"
         maxlength="50"
         :class="$v.middleName.$error ? 'field__input--invalid': ''"
         name="middle-name"
@@ -85,13 +79,11 @@
 
     <!---------  Дата рождения -------->
 
-    <div
-      class="field main__field main__field--birthdate birthdate"
-      :class="$v.birthDate.$error ? 'field--invalid': ''"
-    >
+    <div class="field main__field main__field--birthdate birthdate">
       <label class="birthDate">Дата рождения</label>
       <input
         type="date"
+        tabindex="4"
         class="birthdate__input"
         :class="$v.birthDate.$error ? 'field__input--invalid': ''"
         v-model="birthDate"
@@ -108,13 +100,11 @@
     </div>
 
     <!------ Номер телефона ---------->
-    <div
-      class="field main__field main__field--phone"
-      :class="$v.phone.$error ? 'field--invalid': ''"
-    >
+    <div class="field main__field main__field--phone">
       <label for="phone">Номер телефона</label>
       <input
         type="tel"
+        tabindex="8"
         placeholder="79998887766"
         maxlength="11"
         :class="$v.phone.$error ? 'field__input--invalid': ''"
@@ -141,6 +131,7 @@
           <label for="not-selected">
             <input
               type="radio"
+              tabindex="5"
               id="not-selected"
               name="gender"
               value="not-selected"
@@ -153,6 +144,7 @@
           <label for="male">
             <input
               type="radio"
+              tabindex="6"
               id="male"
               name="gender"
               value="male"
@@ -165,6 +157,7 @@
           <label for="female">
             <input
               type="radio"
+              tabindex="7"
               id="female"
               name="gender"
               value="female"
@@ -178,13 +171,11 @@
     </div>
 
     <!-------- Группа клиентов -------->
-    <div
-      class="field main__field main__field--client-group"
-      :class="$v.clientGroupSelected.$error ? 'field--invalid': ''"
-    >
+    <div class="field main__field main__field--client-group">
       <label for="client-group">Группа клиентов</label>
       <select
         :class="$v.clientGroupSelected.$error ? 'field__input--invalid': ''"
+        tabindex="10"
         name="client-group"
         id="client-group"
         size="3"
@@ -206,7 +197,13 @@
     <!-------- Лечащий врач ------------------>
     <div class="field main__field main__field--doctor">
       <label for="doctor">Лечащий врач</label>
-      <select name="doctor" id="doctor" v-model="doctorSelected" @blur="$v.doctorSelected.$touch()">
+      <select
+        tabindex="11"
+        name="doctor"
+        id="doctor"
+        v-model="doctorSelected"
+        @blur="$v.doctorSelected.$touch()"
+      >
         <option disabled value>Выберите врача</option>
         <option
           v-for="(doctor, index) in doctors"
@@ -218,7 +215,13 @@
     <!-------- Не отправлять SMS --------------->
     <div class="field main__field main__field--sms">
       <label for="dont-send-sms">
-        <input type="checkbox" name="dont-send-sms" id="dont-send-sms" v-model="dontSendSms" />
+        <input
+          type="checkbox"
+          tabindex="9"
+          name="dont-send-sms"
+          id="dont-send-sms"
+          v-model="dontSendSms"
+        />
         Не отправлять СМС
       </label>
     </div>
@@ -234,7 +237,6 @@ const isPhone = value => /^((7)+([0-9]){10})/.test(value); // проверяем
 
 const validSymbols = value => {
   if (value) {
-    console.log("Содержит недопустимые символы");
     return !/[\^,<#%&*:<>?/{|}+_%;"$!±§@~0-9]+/.test(value);
   } else return true;
 };
@@ -295,8 +297,13 @@ export default {
     checkFields: function() {
       if (this.checkFields) {
         this.$v.$touch();
-        let valid = !this.$v.$error;
-        this.$emit("check-result", "MainFields", valid);
+
+        let result = {
+          component: "MainFields",
+          valid: !this.$v.$error
+        };
+
+        this.$emit("check-result", result);
       }
     }
   },
@@ -341,61 +348,97 @@ export default {
 
 .main
   display: grid
-  grid-gap: 0px 1.8rem
-  grid-template-columns: repeat(6, 1fr)
-  grid-template-rows: repeat(5, 85px)
-  grid-template-areas: "a a b b c c" "d d e e e e" "f f g g g g" "h h h i i i" "h h h . . ."
-  text-align: left
 
-.main__field > label
-  margin-bottom: 0.2rem
+@media (min-width: 768px)
+  .main
+    grid-gap: 0 1.8rem
+    grid-template-columns: repeat(6, 1fr)
+    grid-template-rows: repeat(9, 42px)
+    grid-template-areas: "a a b b c c" "a a b b c c" "d d e e e e"  "d d e e e e" "f f g g g g" "f f g g g g" "h h h i i i" "h h h . . ."  "h h h . . ."
 
-.main__field--last-name
-  order: 1
-  grid-area: a
+  .gender-wrapper
+    padding: 10px 0
+
+  .gender-wrapper label
+    margin-right: 10px
+
+  .main__field--last-name
+    order: 1
+    grid-area: a
+
+  .main__field--sms
+    justify-content: center
+    & label
+      padding: 7px 0 0
 
 .main__field--first-name
-  order: 2
   grid-area: b
 
 .main__field--middle-name
-  order: 3
   grid-area: c
 
 .main__field--birthdate
-  order: 4
   grid-area: d
 
 .birthdate__input
   width: 100%
 
 .main__field--gender
-  order: 5
   grid-area: e
 
 .main__field--client-group
-  order: 8
   grid-area: h
 
 .main__field--sms
-  order: 7
   grid-area: g
-  justify-content: center
-
-  & label
-    padding: 27px 0 0
 
 .main__field--phone
-  order: 6
   grid-area: f
 
 .main__field--doctor
-  order: 9
   grid-area: i
 
-.gender-wrapper
-  padding: 10px 0
+@media (min-width: 540px) and (max-width: 767px)
+  .main
+    grid-gap: 0 1.6rem
+    grid-template-columns: repeat(2, 1fr)
+    grid-template-rows: repeat(10, 37px)
+    grid-template-areas: "a b" "a b" "c d" "c d" "e f" "e f" "e g"  "h i" "h i" "h ."
 
-.gender-wrapper label
-  margin-right: 10px
+  .main__field--gender
+    & label
+      display: block
+
+  .main__field--sms
+    & label
+      padding: 3px 0 0
+
+@media (max-width: 539px)
+  .main
+    grid-row-gap: 10px
+    grid-template-areas: "a" "b" "c" "d" "e" "f" "g" "h" "h" "i"
+
+  .gender-wrapper
+    display: flex
+    flex-direction: row
+    justify-content: flex-start
+    align-items: center
+
+    & label
+      margin-right: 10px
+
+  .main__field--gender
+    align-self: center
+
+  .main__field--sms
+    justify-content: center
+
+    & label
+      padding: 0
+
+@media (max-width: 345px)
+  .gender-wrapper
+
+    & label
+      margin-right: 0px
 </style>

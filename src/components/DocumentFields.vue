@@ -1,10 +1,7 @@
 <template>
   <div class="document">
     <!------------ Тип документа ------------------>
-    <div
-      class="field document__field document__field--type"
-      :class="$v.docType.$error ? 'field--invalid': ''"
-    >
+    <div class="field document__field document__field--type">
       <label>Тип документа</label>
       <select
         :class="$v.docType.$error ? 'field__input--invalid': ''"
@@ -24,10 +21,7 @@
     </div>
 
     <!------------ Серия ------------------>
-    <div
-      class="field document__field document__field--series"
-      :class="$v.docType.$error ? 'field--invalid': ''"
-    >
+    <div class="field document__field document__field--series">
       <label>Серия</label>
       <input
         type="text"
@@ -47,10 +41,7 @@
     </div>
 
     <!------------ Номер ------------------>
-    <div
-      class="field document__field document__field--number"
-      :class="$v.docType.$error ? 'field--invalid': ''"
-    >
+    <div class="field document__field document__field--number">
       <label>Номер</label>
       <input
         type="number"
@@ -67,18 +58,19 @@
     </div>
 
     <!------------ Кем выдан ------------------>
-    <div
-      class="field document__field document__field--issued-by"
-      :class="$v.docType.$error ? 'field--invalid': ''"
-    >
+    <div class="field document__field document__field--issued-by">
       <label>Кем выдан</label>
       <input
         type="text"
         maxlength="200"
-        :class="$v.number.$error ? 'field__input--invalid': ''"
+        :class="$v.issuedBy.$error ? 'field__input--invalid': ''"
         v-model="issuedBy"
         @blur="$v.issuedBy.$touch()"
       />
+      <p
+        class="field__error"
+        v-if="$v.issuedBy.$dirty &&!$v.issuedBy.validSymbols"
+      >Недопустимые символы</p>
       <p
         class="field__error"
         v-if="$v.issuedBy.$dirty && !$v.issuedBy.maxLength"
@@ -86,13 +78,11 @@
     </div>
 
     <!------------ Дата выдачи ------------------>
-    <div
-      class="field document__field document__field--issue-date"
-      :class="$v.docType.$error ? 'field--invalid': ''"
-    >
+    <div class="field document__field document__field--issue-date issue-date">
       <label>Дата выдачи</label>
       <input
         type="date"
+        class="issue-date__input"
         :class="$v.issueDate.$error ? 'field__input--invalid': ''"
         v-model="issueDate"
         @blur="$v.issueDate.$touch()"
@@ -140,6 +130,12 @@ const isDocumentSeries = function(val) {
   } else return true; // не валидируем, если значение не введено
 };
 
+const validChars = value => {
+  if (value) {
+    return !/[\^,<%#&*:<>?/{|}+_%;"$!±§@~]+/.test(value);
+  } else return true;
+};
+
 export default {
   name: "DocumentFields",
   mixins: [validationMixin],
@@ -156,7 +152,7 @@ export default {
     seriesFormats: {
       passport: "4444",
       driversLicense: "4444",
-      birthСertificate: "III-АМ"
+      birthСertificate: "III-АБ"
     },
 
     docTypes: [
@@ -179,8 +175,13 @@ export default {
     checkFields: function() {
       if (this.checkFields) {
         this.$v.$touch();
-        let valid = !this.$v.$error;
-        this.$emit("check-result", "DocumentFields", valid);
+
+        let result = {
+          component: "DocumentFields",
+          valid: !this.$v.$error
+        };
+
+        this.$emit("check-result", result);
       }
     }
   },
@@ -201,7 +202,8 @@ export default {
       validNumber: isDocumentNumber
     },
     issuedBy: {
-      maxLength: maxLength(200)
+      maxLength: maxLength(200),
+      validSymbols: validChars
     },
     issueDate: {
       required,
@@ -221,10 +223,7 @@ export default {
 
 .document
   display: grid
-  grid-gap: 5px 1.8rem
-  grid-template-columns: repeat(3, 1fr)
-  grid-template-rows: repeat(2, 1fr)
-  grid-template-areas: "a b c" "d d e"
+  max-width: 100%
 
 .document__field--docType
   grid-area: a
@@ -241,6 +240,30 @@ export default {
 .document__field--issue-date
   grid-area: e
 
+@media (min-width: 768px)
+  .document
+    grid-gap: 0 1.8rem
+    grid-template-columns: repeat(3, 1fr)
+    grid-template-rows: repeat(2, 84px)
+    grid-template-areas: "a b c" "d d e"
+
+@media (min-width: 540px) and (max-width: 767px)
+  .document
+    grid-gap: 0 1.6rem
+    grid-template-columns: repeat(2, 1fr)
+    grid-template-rows: repeat(3, 74px)
+    grid-template-areas: "a b" "c d" "e ."
+
+@media (max-width: 539px)
+  .document
+    grid-gap: 5px 1rem
+    grid-template-rows: repeat(5, 65px)
+    grid-template-areas: "a" "b" "c" "d" "e"
+
+.document__field--issue-date
   & input
     width: 100%
+
+.issue-date__input
+  min-height: 37px
 </style>

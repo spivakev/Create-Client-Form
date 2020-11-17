@@ -1,10 +1,7 @@
 <template>
   <div class="address">
     <!------------ Индекс ------------------>
-    <div
-      class="field address__field address__field--index"
-      :class="$v.cityIndex.$error ? 'field--invalid': ''"
-    >
+    <div class="field address__field address__field--index">
       <label>Индекс</label>
       <input
         type="number"
@@ -26,10 +23,7 @@
     </div>
 
     <!------------ Страна ------------------>
-    <div
-      class="field address__field address__field--country"
-      :class="$v.country.$error ? 'field--invalid': ''"
-    >
+    <div class="field address__field address__field--country">
       <label>Страна</label>
       <input
         type="text"
@@ -41,15 +35,16 @@
       />
       <p
         class="field__error"
+        v-if="$v.country.$dirty &&!$v.country.validSymbols"
+      >Недопустимые символы</p>
+      <p
+        class="field__error"
         v-if="$v.country.$dirty && !$v.country.maxLength"
       >Максимальная длина - 50 символов</p>
     </div>
 
     <!------------ Область ------------------>
-    <div
-      class="field address__field address__field--region"
-      :class="$v.region.$error ? 'field--invalid': ''"
-    >
+    <div class="field address__field address__field--region">
       <label>Область</label>
       <input
         type="text"
@@ -58,6 +53,7 @@
         v-model.trim="region"
         @blur="$v.region.$touch()"
       />
+      <p class="field__error" v-if="$v.region.$dirty &&!$v.region.validSymbols">Недопустимые символы</p>
       <p
         class="field__error"
         v-if="$v.region.$dirty && !$v.region.maxLength"
@@ -65,10 +61,7 @@
     </div>
 
     <!------------ Город ------------------>
-    <div
-      class="field address__field address__field--city"
-      :class="$v.city.$error ? 'field--invalid': ''"
-    >
+    <div class="field address__field address__field--city">
       <label>Город</label>
       <input
         type="text"
@@ -78,6 +71,7 @@
         @blur="$v.city.$touch()"
       />
       <p class="field__error" v-if="$v.city.$dirty && !$v.city.required">Поле не должно быть пустым</p>
+      <p class="field__error" v-if="$v.city.$dirty &&!$v.city.validSymbols">Недопустимые символы</p>
       <p
         class="field__error"
         v-if="$v.city.$dirty && !$v.city.maxLength"
@@ -85,10 +79,7 @@
     </div>
 
     <!------------ Улица ------------------>
-    <div
-      class="field address__field address__field--street"
-      :class="$v.street.$error ? 'field--invalid': ''"
-    >
+    <div class="field address__field address__field--street">
       <label>Улица</label>
       <input
         type="text"
@@ -97,6 +88,7 @@
         v-model.trim="street"
         @blur="$v.street.$touch()"
       />
+      <p class="field__error" v-if="$v.street.$dirty &&!$v.street.validSymbols">Недопустимые символы</p>
       <p
         class="field__error"
         v-if="$v.street.$dirty && !$v.street.maxLength"
@@ -104,10 +96,7 @@
     </div>
 
     <!------------ Дом ------------------>
-    <div
-      class="field address__field address__field--house"
-      :class="$v.houseNumber.$error ? 'field--invalid': ''"
-    >
+    <div class="field address__field address__field--house">
       <label>Дом (корпус, строение, литера)</label>
       <input
         type="text"
@@ -134,6 +123,18 @@ import {
   integer
 } from "vuelidate/lib/validators";
 
+const validChars = value => {
+  if (value) {
+    return !/[\^,<#%&*:<>?/{|}+_%;"$!±§@~]+/.test(value);
+  } else return true;
+};
+
+const validCountryChars = value => {
+  if (value) {
+    return !/[\^,<#%&*:<>?/{|}+_%;"$!±§@~0-7]+/.test(value);
+  } else return true;
+};
+
 export default {
   name: "AddressFields",
   mixins: [validationMixin],
@@ -153,8 +154,13 @@ export default {
     checkFields: function() {
       if (this.checkFields) {
         this.$v.$touch();
-        let valid = !this.$v.$error;
-        this.$emit("check-result", "AddressFields", valid);
+
+        let result = {
+          component: "AddressFields",
+          valid: !this.$v.$error
+        };
+
+        this.$emit("check-result", result);
       }
     }
   },
@@ -164,24 +170,23 @@ export default {
       integer,
       minLength: minLength(6),
       maxLength: maxLength(6)
-      /*  length: val => {
-        if (val) {
-          return val.toString().length == 6;
-        } else return false;
-      }*/
     },
     country: {
-      maxLength: maxLength(50)
+      maxLength: maxLength(50),
+      validSymbols: validCountryChars
     },
     region: {
-      maxLength: maxLength(50)
+      maxLength: maxLength(50),
+      validSymbols: validChars
     },
     city: {
       required,
-      maxLength: maxLength(60)
+      maxLength: maxLength(60),
+      validSymbols: validChars
     },
     street: {
-      maxLength: maxLength(60)
+      maxLength: maxLength(60),
+      validSymbols: validChars
     },
     houseNumber: {
       maxLength: maxLength(50)
@@ -197,10 +202,26 @@ export default {
 
 .address
   display: grid
-  grid-gap: 5px 1.8rem
-  grid-template-columns: repeat(6, 1fr)
-  grid-template-rows: repeat(3, 1fr)
-  grid-template-areas: "a a a b b b" "c c c d d d" "e e e f f f"
+
+@media (min-width: 768px)
+  .address
+    grid-gap: 0 1.8rem
+    grid-template-columns: repeat(6, 1fr)
+    grid-template-rows: repeat(3, 84px)
+    grid-template-areas: "a a a b b b" "c c c d d d" "e e e f f f"
+
+@media (min-width: 540px) and (max-width: 767px)
+  .address
+    grid-gap: 0 1.6rem
+    grid-template-columns: repeat(6, 1fr)
+    grid-template-rows: repeat(3, 74px)
+    grid-template-areas: "a a a b b b" "c c c d d d" "e e e f f f"
+
+@media (max-width: 539px)
+  .address
+    grid-row-gap: 5px
+    grid-template-rows: repeat(6, 65px)
+    grid-template-areas: "a" "b" "c" "d" "e" "f"
 
 .address__field--index
   grid-area: a
