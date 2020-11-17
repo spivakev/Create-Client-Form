@@ -8,5 +8,7 @@ Vue.config.devtools = true
 Vue.use(Vuelidate)
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  router,
+  store,
+  render: h => h(App)
+}).$mount('#app');
